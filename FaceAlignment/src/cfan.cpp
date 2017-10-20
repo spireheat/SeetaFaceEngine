@@ -33,6 +33,8 @@
 #include "cfan.h"
 #include <string.h>
 #include <algorithm>
+#include <cmath>
+#include <stdio.h>
 /** A constructor.
   *  Initialize basic parameters.
   */
@@ -106,9 +108,15 @@ CCFAN::~CCFAN(void)
 void CCFAN::InitModel(const char *model_path)
 {
   /*Open the model file*/
-  FILE *fp = fopen(model_path, "rb+");
+
+  FILE *fp = nullptr;
+  fp = fopen(model_path, "rb+");
+  //fopen_s(&fp, model_path, "rb+");
+  if(fp == NULL)
+    perror("fuck you: ");
   mean_shape_ = new float[pts_num_ * 2];
   fread(mean_shape_, sizeof(float), pts_num_ * 2, fp);
+
 
   /*Load the parameters of the first local stacked autoencoder network*/
   fread(&lan1_size_, sizeof(int), 1, fp);
@@ -126,6 +134,7 @@ void CCFAN::InitModel(const char *model_path)
     lan1_b_[i] = new float[lan1_structure_[i + 1]];
     fread(lan1_b_[i], sizeof(float), lan1_structure_[i + 1], fp);
   }
+  
 
   /*Load the parameters of the second local stacked autoencoder network*/
   fread(&lan2_size_, sizeof(int), 1, fp);
@@ -205,7 +214,7 @@ void CCFAN::FacialPointLocate(const unsigned char *gray_im, int im_width, int im
   {
     for (int j = 0; j < pts_num_; j++)
     {
-      if (isnan(fea[j * 128 + i]))
+      if (std::isnan(fea[j * 128 + i]))
       {
         re_fea[i*pts_num_ + j] = 0;
       }
@@ -281,7 +290,7 @@ void CCFAN::FacialPointLocate(const unsigned char *gray_im, int im_width, int im
   {
     for (int j = 0; j < pts_num_; j++)
     {
-      if (isnan(fea[j * 128 + i]))
+      if (std::isnan(fea[j * 128 + i]))
       {
         re_fea[i*pts_num_ + j] = 0;
       }
