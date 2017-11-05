@@ -128,6 +128,15 @@ int main(int argc, char** argv)
   // Detect 5 facial landmarks
   seeta::FacialLandmark points[5];
   point_detector.PointDetectLandmarks(image_data, faces[0], points);
+    
+  ofstream myfile;
+  myfile.open("bbox.txt", ios_base::app);
+
+  myfile << argv[2] << " " << faces[0].bbox.x << " " << faces[0].bbox.y << " " << faces[0].bbox.width << " " << faces[0].bbox.height << endl;
+  myfile.close();
+
+  return 0;
+
   // for (int i = 0; i<pts_num; i++)
   // {
   //   cvCircle(img_color, cvPoint(points[i].x, points[i].y), 2, CV_RGB(0, 255, 0), CV_FILLED);
